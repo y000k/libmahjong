@@ -10,15 +10,15 @@ from src.major import CCard \
 # =================检查胡牌============= Begin ================
 
 # 二万，三万，四万，五万，六万，七万，八万，九万，二筒，二筒，三条，三条，三条
-Hupai_1 = {"Pai": (CardType.WAN_1
-            , CardType.WAN_2
-            , CardType.WAN_3
-            , CardType.WAN_4
-            , CardType.WAN_5
-            , CardType.WAN_6
-            , CardType.WAN_7
-            , CardType.WAN_8
-            , CardType.WAN_9
+Hupai_1 = {"Pai": (CardType.TONG_1
+            , CardType.TONG_2
+            , CardType.TONG_3
+            , CardType.TONG_4
+            , CardType.TONG_5
+            , CardType.TONG_6
+            , CardType.TONG_7
+            , CardType.TONG_8
+            , CardType.TONG_9
             , CardType.TONG_2
             , CardType.TONG_2
             , CardType.TIAO_3
@@ -27,35 +27,17 @@ Hupai_1 = {"Pai": (CardType.WAN_1
             "C": HuType.Normal
 }
 
-# 一万，九万，一筒，九筒，一条，九条，东，南，西，北，中，发，白，白 国士无双，十三幺
-Hupai_2 = {"Pai": (CardType.WAN_1
-            , CardType.WAN_9
-            , CardType.TONG_1
-            , CardType.TONG_9
-            , CardType.TIAO_1
-            , CardType.TIAO_9
-            , CardType.DONG
-            , CardType.NAN
-            , CardType.XI
-            , CardType.BEI
-            , CardType.ZHONG
-            , CardType.FA
-            , CardType.BAI
-            , CardType.BAI),
-            "C": HuType.ThirteenOrphans
-}
-
 # 一万，一万，一筒，一筒，一条，一条，东，东，西，西，中，中，白，白 七小对
-Hupai_3 = {"Pai": (CardType.WAN_1
-            , CardType.WAN_1
-            , CardType.WAN_1
-            , CardType.WAN_1
+Hupai_3 = {"Pai": (CardType.TONG_1
+            , CardType.TONG_1
+            , CardType.TONG_5
+            , CardType.TONG_5
             , CardType.TIAO_1
             , CardType.TIAO_1
-            , CardType.DONG
-            , CardType.DONG
-            , CardType.XI
-            , CardType.XI
+            , CardType.TIAO_2
+            , CardType.TIAO_2
+            , CardType.TIAO_3
+            , CardType.TIAO_3
             , CardType.ZHONG
             , CardType.ZHONG
             , CardType.BAI
@@ -64,13 +46,13 @@ Hupai_3 = {"Pai": (CardType.WAN_1
 }
 
 Hupai_4 = {"Pai": (
-    #(CardType.WAN_3, CardStatus.Null)
-     (CardType.WAN_5, CardStatus.Peng)
-    , (CardType.WAN_5, CardStatus.Peng)
-    , (CardType.WAN_5, CardStatus.Peng)
-    , (CardType.WAN_6, CardStatus.Peng)
-    , (CardType.WAN_6, CardStatus.Peng)
-    , (CardType.WAN_6, CardStatus.Peng)
+    (CardType.TONG_3, CardStatus.Null)
+    , (CardType.TONG_5, CardStatus.Peng)
+    , (CardType.TONG_5, CardStatus.Peng)
+    , (CardType.TONG_5, CardStatus.Peng)
+    , (CardType.TONG_6, CardStatus.Peng)
+    , (CardType.TONG_6, CardStatus.Peng)
+    , (CardType.TONG_6, CardStatus.Peng)
     , (CardType.TIAO_3, CardStatus.Null)
     , (CardType.TIAO_4, CardStatus.Null)
     , (CardType.TIAO_5, CardStatus.Null)
@@ -85,16 +67,16 @@ Hupai_4 = {"Pai": (
 
 # 一万，一万，一筒，一筒，一条，一条，东，东，西，西，中，中，白 缺一个 七小对
 class TestTing1:
-    m_Cards = (CardType.WAN_1
-            , CardType.WAN_1
+    m_Cards = (CardType.TONG_1
+            , CardType.TONG_1
             , CardType.TONG_1
             , CardType.TONG_1
             , CardType.TIAO_1
             , CardType.TIAO_1
-            , CardType.DONG
-            , CardType.DONG
-            , CardType.XI
-            , CardType.XI
+            , CardType.TIAO_2
+            , CardType.TIAO_2
+            , CardType.TIAO_3
+            , CardType.TIAO_3
             , CardType.ZHONG
             , CardType.ZHONG
             , CardType.BAI)
@@ -102,15 +84,15 @@ class TestTing1:
 
 # 一万，九万，一筒，九筒，一条，东，南，西，北，中，发，白，白  缺个9条，国士无双，十三幺
 class TestTing2:
-    m_Cards = (CardType.WAN_1
-            , CardType.WAN_9
+    m_Cards = (CardType.TONG_1
+            , CardType.TONG_9
             , CardType.TONG_1
             , CardType.TONG_9
             , CardType.TIAO_1
-            , CardType.DONG
-            , CardType.NAN
-            , CardType.XI
-            , CardType.BEI
+            , CardType.TIAO_2
+            , CardType.TIAO_2
+            , CardType.TIAO_3
+            , CardType.TIAO_3
             , CardType.ZHONG
             , CardType.FA
             , CardType.BAI
@@ -119,34 +101,34 @@ class TestTing2:
 
 # 一万，九万，一筒，九筒，一条，东，南，西，北，中，发，白，白  缺个9条，国士无双，十三幺
 class TestTing3:
-    m_Cards = (CardType.WAN_3
-            , CardType.WAN_4
+    m_Cards = (CardType.TONG_3
+            , CardType.TONG_4
             , CardType.TONG_9
             , CardType.TONG_9
             , CardType.TIAO_1
             , CardType.TIAO_2
             , CardType.TIAO_3
-            , CardType.XI
-            , CardType.XI
-            , CardType.XI
+            , CardType.TIAO_5
+            , CardType.TIAO_5
+            , CardType.TIAO_5
             , CardType.BAI
             , CardType.BAI
             , CardType.BAI)
-    m_Needs = [CardType.WAN_2, CardType.WAN_5]
+    m_Needs = [CardType.TONG_2, CardType.TONG_5]
 
 class TestTing4:
     m_Cards = (
-            CardType.WAN_3
-            , CardType.WAN_4
-            , CardType.WAN_5
+            CardType.TONG_3
+            , CardType.TONG_4
+            , CardType.TONG_5
             , CardType.TONG_9
             , CardType.TONG_9
             , CardType.TIAO_1
             , CardType.TIAO_2
             , CardType.TIAO_3
-            , CardType.XI
-            , CardType.XI
-            , CardType.XI
+            , CardType.TIAO_5
+            , CardType.TIAO_5
+            , CardType.TIAO_5
             , CardType.BAI
             , CardType.BAI
             )
@@ -167,7 +149,7 @@ def DebugPrintCards(contai):
 
 contai = CCardsContainer()
 
-for dInfo in (Hupai_1, Hupai_2, Hupai_3, Hupai_4):
+for dInfo in (Hupai_1, Hupai_3, Hupai_4):
     cards = dInfo["Pai"]
     ctype = dInfo["C"]
     contai.Cleanup()
@@ -188,7 +170,7 @@ for dInfo in (Hupai_1, Hupai_2, Hupai_3, Hupai_4):
     for gc in ganglist:
         contai.Gang(gc)
     if type(cards[0]) == tuple:
-        contai.AddCard(CCard(CardType.WAN_5))
+        contai.AddCard(CCard(CardType.TONG_5))
     ret = contai.CheckCompleted()
     PrintCards(contai.m_Cards)
     if ret == ctype:

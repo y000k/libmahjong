@@ -49,7 +49,7 @@ def PrintCards(dTiles, iCard = -1):
     sBottom = ""
     sFlag = ""
     b = False
-    for iType in (CardType.WAN, CardType.TIAO, CardType.TONG, CardType.OTHER):
+    for iType in (CardType.TIAO, CardType.TONG, CardType.OTHER):
         klist = list(dTiles[iType.value].keys())
         klist.sort()
         for k in klist:
@@ -94,7 +94,7 @@ def Check_13yao(dTiles):
 
     # 检查东南西北中发白
     otherlist = dTiles[CardType.OTHER.value].keys()
-    for iOtherValue in range(CardType.DONG.value, CardType.BAI.value + 1):
+    for iOtherValue in range(CardType.ZHONG.value, CardType.BAI.value + 1):
         if not iOtherValue in otherlist:
             return iOtherValue
     return 0
@@ -252,7 +252,6 @@ class CCardsContainer:
     def Cleanup(self):
         self.m_Count = 0
         self.m_Cards = {
-            CardType.WAN.value : {},
             CardType.TONG.value: {},
             CardType.TIAO.value: {},
             CardType.OTHER.value: {},
@@ -347,7 +346,7 @@ class CCardsContainer:
 
         # 开始遍历检查
         for name, member in CardType.__members__.items():
-            if name in ("Unknow", "WAN", "TIAO", "TONG", "OTHER"):
+            if name in ("Unknow", "TIAO", "TONG", "OTHER"):
                 continue
             # 把新的牌，加入到新的容器里
             oNewCard = CCard(member)
@@ -421,9 +420,9 @@ class CMahjongTable:
             , 4: CCardsContainer()
         }
         # 万
-        for i in range(1, 10):
-            for _ in range(0, 4):
-                self.m_Tiles.append(CCard(i))
+        # for i in range(1, 10):
+        #     for _ in range(0, 4):
+        #         self.m_Tiles.append(CCard(i))
         # 条
         for i in range(11, 20):
             for _ in range(0, 4):
@@ -432,8 +431,8 @@ class CMahjongTable:
         for i in range(21, 30):
             for _ in range(0, 4):
                 self.m_Tiles.append(CCard(i))
-        # 东南西北中发白
-        for i in range(91, 98):
+        # 中发白
+        for i in range(91, 93):
             for _ in range(0, 4):
                 self.m_Tiles.append(CCard(i))
         self.Log("初始化准备结束.")

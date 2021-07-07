@@ -35,7 +35,7 @@ ${GameLog3}
 # 渲染命令行界面
 def RendenerCmdGui(dInfo, dUsedCard, sLogList = None):
     sGui = g_CMDUI
-    for i in range(1, 5):
+    for i in range(1, 4):
         # 渲染玩家数据
         sGui = sGui.replace("Test00%s"%(i), dInfo[i]["Name"].ljust(7, " "))
         sGui = sGui.replace("CARDS%s"%(i), str(dInfo[i]["Cards"]).ljust(6, " "))

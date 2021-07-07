@@ -26,13 +26,13 @@ dInfo = {
         "Gang": [],
         "Peng": [],
         "Cards": 0,
-    },
-    4: {
-        "Name": "Cavan",
-        "Gang": [],
-        "Peng": [],
-        "Cards": 0,
-    }
+    }# },
+    # 4: {
+    #     "Name": "Cavan",
+    #     "Gang": [],
+    #     "Peng": [],
+    #     "Cards": 0,
+    # }
 }
 
 class CMyListener(CListener):
@@ -114,8 +114,7 @@ def WaitInput(table, dInfo, dUsedCard):
             intinput = int(s)
         except:
             intinput = -99
-        if -99 == intinput or intinput in (CardType.WAN.value
-                , CardType.TONG.value
+        if -99 == intinput or intinput in (CardType.TONG.value
                 , CardType.TIAO.value
                 , CardType.OTHER.value
                 , CardType.Unknow.value) or not intinput in g_CardsMap.keys():
@@ -124,7 +123,7 @@ def WaitInput(table, dInfo, dUsedCard):
             return CardType(intinput)
 
 def UpdateIndo(table):
-    for i in range(1, 5):
+    for i in range(1, 4):
         dInfo[i]["Cards"] = table.m_Players[i].m_Count
 
 print("""\
