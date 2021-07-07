@@ -483,6 +483,7 @@ class CMahjongTable:
     def Gang(self, iPlayer, addcardtype: CardType, iType):
         oContainer = self.m_Players[iPlayer]
         self.Log("%s 杠 %s"%(iPlayer, g_CardsMap[addcardtype.value]))
+        logging.debug("%s 杠 %s"%(iPlayer, g_CardsMap[addcardtype.value]))
         if 1 == iType:
             # 自己摸到的杠
             if 4 > oContainer.Count(addcardtype):
@@ -606,7 +607,7 @@ class CMahjongTable:
                     # 问玩家要不要胡，可以和杠同时的，也可以选择不胡不杠
                     self.m_Listener.OnReadyComplete(self.m_Player)
             else:
-                logging.debug("流局")
+                self.Log("流局")
 
         self.m_Listener.OnReadyPlay(self.m_Player)
         return self.m_Player
