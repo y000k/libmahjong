@@ -7,14 +7,12 @@ class CardStatus(Enum):
 
 class HuType(Enum):
     NotComplete = 0
-    ThirteenOrphans = 1
-    SevenPairs = 2
-    Normal = 3
+    SevenPairs = 1
+    Normal = 2
 
 g_HuMap = {
     HuType.NotComplete : "没胡"
     , HuType.Normal : "胡"
-    , HuType.ThirteenOrphans : "十三幺"
     , HuType.SevenPairs : "七小对"
 }
 

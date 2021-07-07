@@ -1,18 +1,17 @@
 #encoding:utf-8
 
 """
-广东麻将的规则
+卡五星麻将的规则
 
 胡牌规则分3种情况
     1. 只有一对相同牌型的牌，剩余的牌型都是123，111，1111 这样的情况
     2. 14个牌，可以组成7对
-    3. 一筒，九筒，一条，九条，一万，九万，东南西北中发白
 
 胡牌牌型: 
     - 123 为 顺子
     - 111 为 3个相同的牌，刻子
     - 1111 为 杠，如果不杠，放在牌堆里，则不能使用1111表示
-    - 00 为 一对牌
+    - 00  为 一对牌
     - 0 为单独一个牌
 
     其中杠牌“1111”，就当作“111”看待，如果有4个相同的不杠，那就不能算是“111”
@@ -20,25 +19,31 @@
     - 00,123,123,123,111
     - 00,123,123,111,111
     - 00,123,111,111,111
-    - 00,111,111,111,111
-    - 00,00,00,00,00,00,00
-    - 一筒，九筒，一条，九条，一万，九万，东南西北中发白, 0
+    - 00,111,111,111,111     碰碰胡
+    - 00,00,00,00,00,00,00   七对
 
 牌型：
-    - 万条饼
-    - 东西南北风
+    - 条饼
     - 中发白
 
-万：1-9
 条：11-19
 筒：21-29
-东南西北中发白：91-97
+中发白：91-93
 """
 
 from .listener import CListener
 from .defines import CardType, g_CardsMap, g_CheckList, HuType, g_HuMap, CardStatus
 import random
-import pprint
+import logging
+
+logging.basicConfig(level=logging.DEBUG,#控制台打印的日志级别
+                    filename='new.log',
+                    filemode='a',##模式，有w和a，w就是写模式，每次都会重新写日志，覆盖之前的日志
+                    #a是追加模式，默认如果不写的话，就是追加模式
+                    format='%(levelname)s: %(message)s'
+                    #'%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s'
+                    #日志格式
+                    )
 
 
 #iCard: 在这个牌出现的第一个底部打标记
@@ -76,31 +81,8 @@ def PrintCards(dTiles, iCard = -1):
     if -1 != iCard:
         print(sFlag)
 
-def Check_13yao(dTiles):
-    # 如果牌数不为14，则直接返回失败
-    iTotal = 0
-    for dInfo in dTiles.values():
-        for tileslist in dInfo.values():
-            iTotal += len(tileslist)
-    if iTotal < 14:
-        return 14
-
-    # 检查1，9万，1，9筒，1，9条
-    for tInfo in g_CheckList:
-        iType, _1, _9 = tInfo
-        vlist = dTiles[iType]
-        if (not _1 in vlist) or (not _9 in vlist):
-            return 1
-
-    # 检查东南西北中发白
-    otherlist = dTiles[CardType.OTHER.value].keys()
-    for iOtherValue in range(CardType.ZHONG.value, CardType.BAI.value + 1):
-        if not iOtherValue in otherlist:
-            return iOtherValue
-    return 0
-
 def Check_7Pair(dTiles):
-    # 如果牌数不为14，则直接返回失败
+    # 如果牌 数不为14，则直接返回失败
     iTotal = 0
     for dInfo in dTiles.values():
         for tileslist in dInfo.values():
@@ -252,9 +234,9 @@ class CCardsContainer:
     def Cleanup(self):
         self.m_Count = 0
         self.m_Cards = {
-            CardType.TONG.value: {},
             CardType.TIAO.value: {},
-            CardType.OTHER.value: {},
+            CardType.TONG.value: {},
+            CardType.OTHER.value: {}
         }
 
     def AddCard(self, oCard, oStruct = None):
@@ -268,6 +250,7 @@ class CCardsContainer:
         oStruct[iType][oCard.Value()].append(oCard)
         if not bOther:
             self.m_Count += 1
+        # logging.debug("oCard:"+str(oCard)+"\noStruce"+str(oStruct))
 
     # 出牌
     def RemoveCard(self, cardtype: CardType, oStruct = None):
@@ -308,7 +291,7 @@ class CCardsContainer:
             return 0
         return len(dInfo[oCard.Value()])
 
-    def Gang(self, cardtype: CardType):
+    def Gang_Status(self, cardtype: CardType):
         iCount = self.Count(cardtype)
         if 4 != iCount:
             return False
@@ -319,7 +302,7 @@ class CCardsContainer:
         
         return True
 
-    def Peng(self, cardtype: CardType):
+    def Peng_Status(self, cardtype: CardType):
         iCount = self.Count(cardtype)
         if 3 > iCount:
             return False
@@ -369,11 +352,6 @@ class CCardsContainer:
         # 胡牌至少要14张牌
         if iCount < 14:
             return HuType.NotComplete
-        
-        # 先检查没有对子的胡牌，13幺
-        ret = Check_13yao(oStruct)
-        if 0 == ret:
-            return HuType.ThirteenOrphans
 
         ret = Check_7Pair(oStruct)
         if 0 == ret:
@@ -414,15 +392,10 @@ class CMahjongTable:
 
         # 初始化麻将牌
         self.m_Players = {
-              1: CCardsContainer()
+            1: CCardsContainer()
             , 2: CCardsContainer()
             , 3: CCardsContainer()
-            , 4: CCardsContainer()
         }
-        # 万
-        # for i in range(1, 10):
-        #     for _ in range(0, 4):
-        #         self.m_Tiles.append(CCard(i))
         # 条
         for i in range(11, 20):
             for _ in range(0, 4):
@@ -432,7 +405,7 @@ class CMahjongTable:
             for _ in range(0, 4):
                 self.m_Tiles.append(CCard(i))
         # 中发白
-        for i in range(91, 93):
+        for i in range(91, 94):
             for _ in range(0, 4):
                 self.m_Tiles.append(CCard(i))
         self.Log("初始化准备结束.")
@@ -449,10 +422,12 @@ class CMahjongTable:
         # 从庄家开始，按顺序，每人拿四个牌3次，第四次每人拿一个
         iPlayer = self.m_Banker
         playerlist = []
-        for _ in range(4):
+
+        # 加入3个玩家，从庄家开始
+        for _ in range(3):
             playerlist.append(iPlayer)
             iPlayer += 1
-            if iPlayer > 4:
+            if iPlayer > 3:
                 iPlayer = 1
 
         # 总共4轮，每人每轮拿4个牌
@@ -469,6 +444,7 @@ class CMahjongTable:
                     oTile.m_Used = True
                     self.m_Players[iPlayer].AddCard(oTile)
                     self.m_StartIndex += 1
+        # self.Log(str(self.m_StartIndex))            
         self.Log("发牌.")
         
     def ComfireBanker(self):
@@ -493,12 +469,14 @@ class CMahjongTable:
         if 2 > oContainer.Count(addcardtype):
             return False
         # 如果自己有2个了，可以碰，就把捡回来的加到手牌里
-        if self.m_Tiles[-1].m_CardType != addcardtype:
-            raise Exception("Gang Error")
-        oContainer.AddCard(self.m_Tiles[-1])
-        oContainer.Peng(addcardtype)
+        # if self.m_Tiles[-1].m_CardType != addcardtype:
+        #     raise Exception("Peng Error")
+        # oContainer.AddCard(self.m_Tiles[-1])
+        oContainer.AddCard(CCard(addcardtype))
+        oContainer.Peng_Status(addcardtype)
         self.Log("%s 碰 %s"%(iPlayer, g_CardsMap[addcardtype.value]))
         self.m_Listener.OnPeng(iPlayer, addcardtype)
+        logging.debug("%s 碰 %s"%(iPlayer, g_CardsMap[addcardtype.value]))
         return True
 
     # 杠牌，分为别人打出来的杠，和自己摸牌杠
@@ -514,23 +492,41 @@ class CMahjongTable:
             if 3 > oContainer.Count(addcardtype):
                 return False
             # 如果自己有3个了，可以杠，就把捡回来的加到手牌里
-            if self.m_Tiles[-1].m_CardType != addcardtype:
-                raise Exception("Gang Error")
-            oContainer.AddCard(self.m_Tiles[-1])
+            # if self.m_Tiles[-1].m_CardType != addcardtype:
+            #     raise Exception("Gang Error")
+            # oContainer.AddCard(self.m_Tiles[-1])
+            oContainer.AddCard(CCard(addcardtype))
 
-        oContainer.Gang(addcardtype)
+        oContainer.Gang_Status(addcardtype)
+
+        oContainer.AddCard(self.GetGangCard())
         self.m_Listener.OnGang(iPlayer, addcardtype)
         return True
 
     # 摸牌, 默认摸给当前回合的玩家
-    def DrawCard(self):
-        oCard = self.m_Tiles[self.m_StartIndex]
-        self.m_StartIndex += 1
+    def GetNewCard(self):
+        if self.m_EndIndex>=self.m_StartIndex:
+            oCard = self.m_Tiles[self.m_StartIndex]
+            self.m_StartIndex += 1
+            oContainer = self.m_Players[self.m_Player]
+            oContainer.AddCard(oCard)
+            self.m_DrawCard = oCard.m_CardType
+            # logging.debug("--->"+str(oCard)+str(self.m_DrawCard))
+            self.m_Listener.OnDrawCard(self.m_Player, oCard)
+            logging.debug("剩余牌数："+str(self.m_EndIndex-self.m_StartIndex+1)+"  当前张数："+str(self.m_StartIndex))
+            return oCard
+        else:
+            return
+
+    def GetGangCard(self):
+        oCard = self.m_Tiles[self.m_EndIndex]
+        self.m_EndIndex -= 1
         oContainer = self.m_Players[self.m_Player]
         oContainer.AddCard(oCard)
         self.m_DrawCard = oCard.m_CardType
-        print("--->",oCard,self.m_DrawCard)
+        # logging.debug("--->"+str(oCard)+str(self.m_DrawCard))
         self.m_Listener.OnDrawCard(self.m_Player, oCard)
+        logging.debug("剩余牌数："+str(self.m_EndIndex-self.m_StartIndex+1)+"  当前张数："+str(self.m_StartIndex))
         return oCard
 
     # 暂时不能吃胡
@@ -565,7 +561,7 @@ class CMahjongTable:
     def Play(self, iPlayer, cardtype: CardType):
         # 打出去的牌，重新回归牌池
         oPlayCard = self.m_Players[iPlayer].RemoveCard(cardtype)
-        self.m_Tiles.append(oPlayCard)
+        # self.m_Tiles.append(oPlayCard)
 
         # 记录已经打出去的牌（其实这里可以优化掉了，暂时还有用）
         self.m_PlayCard.append(cardtype)
@@ -585,19 +581,19 @@ class CMahjongTable:
             self.m_Player = self.m_Banker
         else:
             if iPlayer:
-                if not iPlayer in (1, 2, 3, 4):
-                    print("Unkonw player %s"%(iPlayer))
+                if not iPlayer in (1, 2, 3):
+                    logging.debug("Unkonw player %s"%(iPlayer))
                 else:
                     self.m_Player = iPlayer
             else:
                 self.m_Player += 1
-                if self.m_Player > 4:
+                if self.m_Player > 3:
                     self.m_Player = 1
         
         self.m_Step += 1
         # 不跳过摸牌阶段(碰，吃就不能摸牌)，就摸牌吧
         if not bSkipDraw:
-            oCard = self.DrawCard()
+            oCard = self.GetNewCard()
             if oCard:
                 oContainer = self.m_Players[self.m_Player]
                 # 检查是否可以杠，胡
@@ -610,7 +606,7 @@ class CMahjongTable:
                     # 问玩家要不要胡，可以和杠同时的，也可以选择不胡不杠
                     self.m_Listener.OnReadyComplete(self.m_Player)
             else:
-                print("流局")
+                logging.debug("流局")
 
         self.m_Listener.OnReadyPlay(self.m_Player)
         return self.m_Player

@@ -10,13 +10,13 @@ from src.cmdui import RendenerCmdGui, CleanScreen
 
 dInfo = {
     1: {
-        "Name": "Tony",
+        "Name": "Lier",
         "Gang": [],
         "Peng": [],
         "Cards": 0,
     },
     2: {
-        "Name": "Lier",
+        "Name": "Tony",
         "Gang": [],
         "Peng": [],
         "Cards": 0,
@@ -26,13 +26,7 @@ dInfo = {
         "Gang": [],
         "Peng": [],
         "Cards": 0,
-    }# },
-    # 4: {
-    #     "Name": "Cavan",
-    #     "Gang": [],
-    #     "Peng": [],
-    #     "Cards": 0,
-    # }
+    }
 }
 
 class CMyListener(CListener):
@@ -74,6 +68,7 @@ class CMyListener(CListener):
         if not a:
             return
         if a == "P":
+            dInfo[iPlayer]["Peng"].append(g_CardsMap[cardtype.value])
             self.m_Table.Peng(iPlayer, cardtype)
 
     # iPlayer 碰了这个牌
@@ -89,8 +84,10 @@ class CMyListener(CListener):
         if not a:
             return
         if a == "G":
+            dInfo[iPlayer]["Gang"].append(g_CardsMap[cardtype.value])
             self.m_Table.Gang(iPlayer, cardtype, iType)
         elif a == "P":
+            dInfo[iPlayer]["Peng"].append(g_CardsMap[cardtype.value])
             self.m_Table.Peng(iPlayer, cardtype)
 
     # iPlayer 杠了这个牌
@@ -125,14 +122,6 @@ def WaitInput(table, dInfo, dUsedCard):
 def UpdateIndo(table):
     for i in range(1, 4):
         dInfo[i]["Cards"] = table.m_Players[i].m_Count
-
-print("""\
-============================================================================
-|                              命令行麻将 v0.0.1                           |
-|                        made by h.xiongyu@gmail.com                       |
-|               https://github.com/huangxiongyu/cmdmajor.git               |
-============================================================================
-""")
 
 oListener = CMyListener()
 table = CMahjongTable(oListener)

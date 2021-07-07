@@ -4,9 +4,11 @@ from .defines import CardType
 
 class CListener:
 
+    # 定庄
     def OnConfirmBanker(self, iPlayer):
         pass
 
+    # 发牌
     def OnDrawCard(self, iPlayer, cardtype: CardType):
         pass
 
